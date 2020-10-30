@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Product} from './product.model';
+import { PersonaI } from './model/persona.model';
+import {observable} from 'rxjs';
+import {AngularFireDatabase, AngularFireList} from '@angular/fire/database';
 import { ProductsComponent } from './products/products.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductsService {
+  private contactoCollection: AngularFireList<any>;
 
   products: Product[] = [
     {
@@ -52,7 +56,7 @@ export class ProductsService {
     }
   ];
 
-  constructor() { }
+  constructor(private afs: AngularFireDatabase) { }
 
   getAllProducts() {
     return this.products;
@@ -61,4 +65,22 @@ export class ProductsService {
   getProduct(id:string){
     return this.products.find(item => id===item.id);
   }
+  savePerson(personai: PersonaI) {
+    this.contactoCollection = this.GetUsersList();
+    this.contactoCollection.push({
+    email: personai.email,
+    nombre: personai.nombre,
+    mensaje: personai.mensaje
+     })
+  }
+
+  GetUsersList() {
+    this.contactoCollection = this.afs.list('jugueton-d5601');
+    return this.contactoCollection;
+    console.log(this.contactoCollection);
+  }
+
+  
+  
+
 }
